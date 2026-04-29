@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accelerated Mathematics — Entrance Exam</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
+  :root {
+    --navy: #0f1b2d;
+    --ink: #1a2a40;
+    --mid: #2c4a6e;
+    --steel: #4a6d8c;
+    --sky: #6ba3d6;
+    --ice: #b8d4ed;
+    --frost: #e3eef7;
+    --snow: #f4f8fc;
+    --white: #ffffff;
+    --gold: #e8a838;
+    --gold-soft: #fdf3dc;
+    --correct: #2a9d5c;
+    --correct-bg: #e8f5ef;
+    --incorrect: #d94452;
+    --incorrect-bg: #fde8ea;
+    --partial: #e8a838;
+    --partial-bg: #fdf3dc;
+    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'Fraunces', serif;
+    --font-mono: 'DM Mono', monospace;
+    --shadow-sm: 0 1px 3px rgba(15,27,45,0.08);
+    --shadow-md: 0 4px 12px rgba(15,27,45,0.1);
+    --shadow-lg: 0 8px 30px rgba(15,27,45,0.12);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--frost);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(107,163,214,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(232,168,56,0.08) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 24px 20px 60px; position: relative; z-index: 1; }
+
+  /* === HEADER === */
+  .exam-header {
+    text-align: center;
+    padding: 48px 32px 40px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--mid) 100%);
+    border-radius: var(--radius-lg);
+    color: var(--white);
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative; overflow: hidden;
+  }
+  .exam-header::after {
+    content: '';
+    position: absolute; top: -40%; right: -10%; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,168,56,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .exam-header h1 { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .exam-header .subtitle { font-size: 1rem; color: var(--ice); font-weight: 400; margin-bottom: 20px; }
+  .exam-meta { display: flex; justify-content: center; gap: 28px; font-size: 0.85rem; color: var(--ice); opacity: 0.9; }
+  .exam-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* === START SCREEN === */
+  .start-screen {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 36px 32px; box-shadow: var(--shadow-md); margin-bottom: 24px; border: 1px solid var(--frost);
+  }
+  .start-screen h2 { font-family: var(--font-display); color: var(--navy); font-size: 1.3rem; margin-bottom: 16px; }
+  .start-screen ul { list-style: none; padding: 0; }
+  .start-screen li { padding: 6px 0 6px 24px; position: relative; font-size: 0.95rem; }
+  .start-screen li::before { content: '›'; position: absolute; left: 6px; color: var(--gold); font-weight: 700; font-size: 1.1rem; }
+  .name-field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--steel); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .name-field input {
+    width: 100%; padding: 10px 14px; font-family: var(--font-body); font-size: 1rem;
+    border: 1.5px solid var(--ice); border-radius: 8px; background: var(--snow); color: var(--ink); transition: border-color 0.2s;
+  }
+  .name-field input:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(107,163,214,0.15); }
+
+  /* === TIMER BAR === */
+  .timer-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white); border-bottom: 1px solid var(--frost);
+    padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: var(--shadow-sm); border-radius: 0 0 var(--radius) var(--radius);
+    margin-bottom: 24px; transition: background 0.3s;
+  }
+  .timer-bar.warning { background: #fef3e2; border-bottom-color: var(--gold); }
+  .timer-bar.danger { background: var(--incorrect-bg); border-bottom-color: var(--incorrect); }
+  .timer-display { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 500; color: var(--ink); min-width: 80px; }
+  .timer-bar.warning .timer-display { color: #b57a10; }
+  .timer-bar.danger .timer-display { color: var(--incorrect); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .timer-label { font-size: 0.82rem; color: var(--steel); font-weight: 500; }
+  .timer-section { font-size: 0.82rem; color: var(--steel); font-weight: 500; text-align: right; }
+
+  /* === QUESTION CARD === */
+  .question-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md); border: 1px solid var(--frost);
+    overflow: hidden; margin-bottom: 20px;
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .question-card.correct { border-left: 4px solid var(--correct); }
+  .question-card.incorrect { border-left: 4px solid var(--incorrect); }
+
+  .q-section-tag {
+    background: var(--navy); color: var(--white);
+    padding: 10px 22px; font-family: var(--font-display); font-size: 0.9rem; font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .q-section-marks { background: rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 16px; font-family: var(--font-body); font-size: 0.75rem; font-weight: 500; }
+
+  .q-body { padding: 24px 24px 20px; }
+  .q-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .q-number { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; color: var(--steel); background: var(--frost); padding: 3px 10px; border-radius: 6px; }
+  .q-marks { font-size: 0.78rem; color: var(--steel); font-weight: 500; }
+  .q-text { font-size: 1rem; margin-bottom: 16px; line-height: 1.7; }
+
+  /* === INPUTS === */
+  .answer-input {
+    width: 100%; padding: 10px 14px; font-family: var(--font-mono); font-size: 1rem;
+    border: 1.5px solid var(--ice); border-radius: 8px; background: var(--snow); color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .answer-input:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(107,163,214,0.15); }
+  .answer-input.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .answer-input.incorrect { border-color: var(--incorrect); background: var(--incorrect-bg); }
+  .answer-hint { font-size: 0.78rem; color: var(--steel); margin-top: 5px; font-style: italic; }
+  .dual-fields { display: flex; gap: 16px; flex-wrap: wrap; }
+  .dual-fields > div { flex: 1; min-width: 140px; }
+  .field-label { font-size: 0.82rem; color: var(--steel); font-weight: 500; margin-bottom: 4px; display: block; }
+
+  /* === MCQ === */
+  .mcq-options { display: flex; flex-direction: column; gap: 8px; }
+  .mcq-option {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    border: 1.5px solid var(--ice); border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; background: var(--snow);
+  }
+  .mcq-option:hover { border-color: var(--sky); background: var(--frost); }
+  .mcq-option.selected { border-color: var(--mid); background: var(--frost); }
+  .mcq-option.selected.correct-choice { border-color: var(--correct); background: var(--correct-bg); }
+  .mcq-option.selected.incorrect-choice { border-color: var(--incorrect); background: var(--incorrect-bg); }
+  .mcq-option.show-correct { border-color: var(--correct); background: var(--correct-bg); }
+  .mcq-radio { width: 18px; height: 18px; border: 2px solid var(--ice); border-radius: 50%; flex-shrink: 0; position: relative; transition: border-color 0.2s; }
+  .mcq-option.selected .mcq-radio { border-color: var(--mid); }
+  .mcq-option.selected .mcq-radio::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; background: var(--mid); border-radius: 50%; }
+  .mcq-label { font-size: 0.95rem; line-height: 1.5; }
+
+  /* === FEEDBACK === */
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; display: none; line-height: 1.5; }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  .feedback.correct-fb { background: var(--correct-bg); color: #1a7a3d; border: 1px solid #b4dfc6; }
+  .feedback.incorrect-fb { background: var(--incorrect-bg); color: #a33340; border: 1px solid #f0bfc4; }
+  .feedback strong { font-weight: 600; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* === NAVIGATION === */
+  .nav-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; gap: 12px;
+  }
+  .nav-btn {
+    font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
+    padding: 10px 22px; border: 1.5px solid var(--ice); border-radius: 8px;
+    cursor: pointer; background: var(--white); color: var(--mid);
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--sky); background: var(--frost); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-btn.primary { background: linear-gradient(135deg, var(--mid), var(--navy)); color: var(--white); border-color: transparent; }
+  .nav-btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .nav-btn.submit-btn { background: linear-gradient(135deg, var(--correct), #1e8449); color: var(--white); border-color: transparent; }
+  .nav-btn.submit-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  /* === QUESTION DOTS === */
+  .q-dots {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 6px; padding: 14px 0 8px;
+  }
+  .q-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    background: var(--snow); border: 1.5px solid var(--ice); color: var(--steel);
+  }
+  .q-dot:hover { border-color: var(--sky); background: var(--frost); }
+  .q-dot.active { background: var(--navy); color: var(--white); border-color: var(--navy); transform: scale(1.1); }
+  .q-dot.answered { background: var(--frost); border-color: var(--sky); color: var(--mid); }
+  .q-dot.correct-dot { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+  .q-dot.incorrect-dot { background: var(--incorrect-bg); border-color: var(--incorrect); color: var(--incorrect); }
+
+  /* === RESULTS === */
+  .results-panel {
+    display: none; background: var(--white); border-radius: var(--radius-lg);
+    padding: 40px 32px; box-shadow: var(--shadow-lg); text-align: center;
+    margin-top: 28px; border: 1px solid var(--frost);
+  }
+  .results-panel.show { display: block; animation: fadeIn 0.5s ease; }
+  .results-score { font-family: var(--font-display); font-size: 3.5rem; font-weight: 700; color: var(--navy); margin: 12px 0 4px; }
+  .results-max { font-size: 1.1rem; color: var(--steel); margin-bottom: 20px; }
+  .results-band { display: inline-block; padding: 8px 24px; border-radius: 24px; font-weight: 600; font-size: 1rem; margin-bottom: 24px; }
+  .band-strong { background: var(--correct-bg); color: var(--correct); }
+  .band-capable { background: var(--partial-bg); color: #8a6310; }
+  .band-developing { background: #fde8ea; color: var(--incorrect); }
+  .band-below { background: #f0e0e0; color: #990000; }
+  .results-breakdown { text-align: left; margin-top: 24px; border-top: 1px solid var(--frost); padding-top: 20px; }
+  .results-breakdown h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--navy); margin-bottom: 12px; }
+  .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--frost); font-size: 0.92rem; }
+  .breakdown-row:last-child { border-bottom: none; font-weight: 700; padding-top: 14px; border-top: 2px solid var(--ice); }
+  .breakdown-bar { width: 120px; height: 8px; background: var(--frost); border-radius: 4px; overflow: hidden; margin: 0 16px; flex-shrink: 0; }
+  .breakdown-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+  .review-btn { margin-top: 20px; }
+
+  .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+    padding: 14px 36px; border: none; border-radius: 10px; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.01em;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--mid), var(--navy)); color: var(--white); box-shadow: var(--shadow-md); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .container { padding: 12px 10px 40px; }
+    .exam-header { padding: 32px 20px; }
+    .exam-header h1 { font-size: 1.5rem; }
+    .exam-meta { flex-direction: column; gap: 8px; }
+    .q-body { padding: 18px 16px; }
+    .q-dots { gap: 4px; }
+    .q-dot { width: 28px; height: 28px; font-size: 0.65rem; }
+    .results-score { font-size: 2.5rem; }
+  }
+
+  @media print {
+    .timer-bar, .nav-bar, .q-dots, .exam-header::after { display: none; }
+    body { background: white; }
+    body::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+  <!-- HEADER -->
+  <div class="exam-header">
+    <h1>Accelerated Mathematics</h1>
+    <div class="subtitle">Entrance Examination — Year 9 Entry</div>
+    <div class="exam-meta">
+      <span>⏱ 30 minutes</span>
+      <span>📝 20 marks</span>
+      <span>🚫 No calculators</span>
+    </div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="start-screen">
+    <h2>Instructions</h2>
+    <ul>
+      <li>Attempt <strong>all</strong> questions.</li>
+      <li>For algebra answers, type them naturally using <code>^</code> for powers — for example, type <code>5x^3</code> to mean 5x³.</li>
+      <li>Calculators are <strong>not</strong> permitted.</li>
+      <li>You have <strong>30 minutes</strong>. A timer will appear when you begin.</li>
+      <li>Use the <strong>Next</strong> and <strong>Previous</strong> buttons or the numbered dots to navigate between questions.</li>
+      <li>Your responses will be recorded when you submit or when time expires.</li>
+    </ul>
+    <div class="name-field" style="margin-top: 22px;">
+      <label for="studentName">Your Name</label>
+      <input type="text" id="studentName" placeholder="Enter your full name" />
+    </div>
+    <div class="btn-row" style="margin-top: 20px;">
+      <button class="btn btn-primary" onclick="startExam()">Begin Exam</button>
+    </div>
+  </div>
+
+  <!-- TIMER BAR -->
+  <div class="timer-bar hidden" id="timerBar">
+    <div>
+      <div class="timer-label">Time Remaining</div>
+      <div class="timer-display" id="timerDisplay">30:00</div>
+    </div>
+    <div class="timer-section" id="sectionLabel"></div>
+  </div>
+
+  <!-- EXAM CONTENT (single question at a time) -->
+  <div id="examContent" class="hidden">
+    <div id="questionSlot"></div>
+
+    <!-- NAV BAR -->
+    <div class="nav-bar">
+      <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">‹ Previous</button>
+      <button class="nav-btn primary" id="nextBtn" onclick="navigate(1)">Next ›</button>
+      <button class="nav-btn submit-btn hidden" id="submitBtn" onclick="submitExam()">Submit Exam</button>
+    </div>
+
+    <!-- QUESTION DOTS -->
+    <div class="q-dots" id="qDots"></div>
+  </div>
+
+  <!-- SUBMISSION CONFIRMATION -->
+  <div class="results-panel" id="resultsPanel">
+    <div style="font-size: 3rem; margin-bottom: 12px;">✓</div>
+    <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: var(--navy); margin-bottom: 8px;">Exam Submitted</div>
+    <div style="font-size: 1rem; color: var(--steel); margin-bottom: 20px; line-height: 1.6;" id="confirmMsg">
+      Thank you for completing the Accelerated Mathematics Entrance Exam.<br>
+      Your responses have been recorded. Your teacher will review the results and be in touch.
+    </div>
+    <div id="emailStatus" style="display:none; padding: 10px 16px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 16px;"></div>
+    <div style="background: var(--frost); border-radius: 10px; padding: 16px 20px; text-align: left; font-size: 0.9rem; color: var(--ink); line-height: 1.6;">
+      <strong>What happens next?</strong><br>
+      Your teacher will review all results and let you know about placement into the Accelerated Mathematics course. Please do not discuss specific questions or answers with other students who may not have sat the exam yet.
+    </div>
+  </div>
+
+  <!-- HIDDEN TEACHER RESULTS (Ctrl+Shift+T to reveal) -->
+  <div class="results-panel" id="teacherPanel" style="display:none; border: 2px solid var(--incorrect);">
+    <div style="font-size: 0.82rem; font-weight: 600; color: var(--incorrect); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Teacher View — Confidential</div>
+    <div class="results-score" id="totalScore">0</div>
+    <div class="results-max">out of 20</div>
+    <div id="bandLabel" class="results-band"></div>
+    <div class="results-breakdown">
+      <h3>Section Breakdown</h3>
+      <div id="breakdownRows"></div>
+    </div>
+    <div class="results-breakdown" style="margin-top: 16px;">
+      <h3>Question-by-Question Detail</h3>
+      <div id="detailRows"></div>
+    </div>
+    <div class="btn-row" style="margin-top: 16px;">
+      <button class="btn btn-primary" onclick="downloadCSV()" style="font-size: 0.9rem; padding: 10px 24px;">Download Results as CSV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== QUESTION DATA =====
+// ===== DECODE HELPERS (answer obfuscation) =====
+function _d(s) { return atob(s); }
+function _da(arr) { return arr.map(function(x) { return Array.isArray(x) ? x.map(_d) : _d(x); }); }
+function _dn(arr) { return arr.map(function(x) { if (Array.isArray(x)) return x.map(function(v){return isNaN(Number(_d(v)))?_d(v):Number(_d(v));}); var v=_d(x); return isNaN(Number(v))?v:Number(v); }); }
+
+const QUESTIONS = [
+  // === SECTION A: Algebraic Fluency (3 marks) ===
+  {
+    id: '1', section: 'A — Algebraic Fluency', sectionMax: 3,
+    label: 'Q1', marks: 1,
+    text: 'Simplify: \\(\\;(2a^3)^2 \\times 3a^4\\)',
+    type: 'text', placeholder: 'Type your answer',
+    hint: 'Use ^ for powers, e.g. 7x^8',
+    accept: _da(["MTJhXjEw","MTJhMTA="]), solution: _d('MTJhwrnigbA='),
+    explanation: _d('KDJhwrMpwrIgPSA0YeKBtiwgdGhlbiA0YeKBtiDDlyAzYeKBtCA9IDEyYcK54oGw')
+  },
+  {
+    id: '2', section: 'A — Algebraic Fluency', sectionMax: 3,
+    label: 'Q2', marks: 1,
+    text: 'If \\(x = -3\\), find the value of: \\(\\;2x^2 - x^3\\)',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["NDU="]), solution: _d('NDU='),
+    explanation: _d('MigtMynCsiAtICgtMynCsyA9IDIoOSkgLSAoLTI3KSA9IDE4ICsgMjcgPSA0NQ==')
+  },
+  {
+    id: '3', section: 'A — Algebraic Fluency', sectionMax: 3,
+    label: 'Q3', marks: 1,
+    text: 'Find the value of \\(\\;\\dfrac{5a^2b}{ab} \\times \\dfrac{2ab}{5a}\\;\\) when \\(a = 4\\) and \\(b = 3\\).',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["MjQ="]), solution: _d('MjQ='),
+    explanation: _d('U2ltcGxpZnk6IDVhwrJiIMO3IGFiID0gNWEuIFRoZW4gMmFiIMO3IDVhID0gMmIvNS4gUHJvZHVjdDogNWEgw5cgMmIvNSA9IDJhYi4gV2hlbiBhPTQsIGI9MzogMig0KSgzKSA9IDI0')
+  },
+
+  // === SECTION B: Algebraic Thinking (4 marks) ===
+  {
+    id: '4', section: 'B — Algebraic Thinking', sectionMax: 4,
+    label: 'Q4', marks: 1,
+    text: 'Solve: \\(\\;3(2x - 5) + 7 = 2(x + 3)\\)',
+    type: 'solve', placeholder: 'Enter the value of x',
+    hint: 'Enter just the number (decimals are OK)',
+    accept: _dn(["My41"]), solution: _d('eCA9IDMuNQ=='),
+    explanation: _d('NnggLSAxNSArIDcgPSAyeCArIDYg4oaSIDZ4IC0gOCA9IDJ4ICsgNiDihpIgNHggPSAxNCDihpIgeCA9IDMuNQ==')
+  },
+  {
+    id: '5a', section: 'B — Algebraic Thinking', sectionMax: 4,
+    label: 'Q5 (a)', marks: 1,
+    text: 'Two number crunchers:<br><br><strong style="font-family:var(--font-mono);background:var(--frost);padding:6px 12px;border-radius:8px;display:inline-block;margin:3px 0;">Machine A: Input → ×3 → subtract 5 → Output</strong><br><strong style="font-family:var(--font-mono);background:var(--frost);padding:6px 12px;border-radius:8px;display:inline-block;margin:3px 0;">Machine B: Input → ×5 → subtract 13 → Output</strong><br><br>Find the input that gives the <strong>same output</strong> from both machines.',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["NA=="]), solution: _d('NA=='),
+    explanation: _d('M3ggLSA1ID0gNXggLSAxMyDihpIgLTUgKyAxMyA9IDV4IC0gM3gg4oaSIDggPSAyeCDihpIgeCA9IDQ=')
+  },
+  {
+    id: '5b', section: 'B — Algebraic Thinking', sectionMax: 4,
+    label: 'Q5 (b)', marks: 1,
+    text: 'What is the common output from both machines for that input?',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["Nw=="]), solution: _d('Nw=='),
+    explanation: _d('TWFjaGluZSBBOiAzKDQpIC0gNSA9IDcuIE1hY2hpbmUgQjogNSg0KSAtIDEzID0gNyDinJM=')
+  },
+  {
+    id: '6', section: 'B — Algebraic Thinking', sectionMax: 4,
+    label: 'Q6', marks: 1,
+    text: 'A rectangle has a perimeter of 46 cm. Its length is 5 more than twice its width. Find the dimensions.',
+    type: 'dual', labels: ['Width (cm):', 'Length (cm):'], keys: ['6w','6l'],
+    placeholder: ['Enter a number','Enter a number'],
+    accept: [_dn(["Ng=="]),_dn(["MTc="])], solution: _d('V2lkdGggPSA2IGNtLCBMZW5ndGggPSAxNyBjbQ=='),
+    explanation: _d('TGV0IHdpZHRoID0gdy4gTGVuZ3RoID0gMncgKyA1LiBQZXJpbWV0ZXI6IDIoMncrNSkgKyAydyA9IDQ2IOKGkiA2dyArIDEwID0gNDYg4oaSIHcgPSA2LiBMZW5ndGggPSAxNw==')
+  },
+
+  // === SECTION C: Patterns and Generalisation (4 marks) ===
+  {
+    id: '7a', section: 'C — Patterns and Generalisation', sectionMax: 4,
+    label: 'Q7 (a)', marks: 1,
+    text: 'A pattern of T-shapes is made from dots:<br>T(1) = 5 dots, T(2) = 9 dots, T(3) = 13 dots, T(4) = 17 dots.<br><br>How many dots are in T(10)?',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["NDE="]), solution: _d('NDE='),
+    explanation: _d('UGF0dGVybjogNSwgOSwgMTMsIDE3IOKAlCBpbmNyZWFzZXMgYnkgNC4gUnVsZTogVChuKSA9IDRuICsgMS4gVCgxMCkgPSA0KDEwKSArIDEgPSA0MQ==')
+  },
+  {
+    id: '7b', section: 'C — Patterns and Generalisation', sectionMax: 4,
+    label: 'Q7 (b)', marks: 1,
+    text: 'Which term number has exactly 201 dots?',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["NTA="]), solution: _d('VGVybSA1MA=='),
+    explanation: _d('NG4gKyAxID0gMjAxIOKGkiA0biA9IDIwMCDihpIgbiA9IDUw')
+  },
+  {
+    id: '8a', section: 'C — Patterns and Generalisation', sectionMax: 4,
+    label: 'Q8 (a)', marks: 1,
+    text: 'The first four terms of a pattern are: \\(\\;1,\\; 4,\\; 9,\\; 16,\\; \\ldots\\)<br><br>Find the 7th term.',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["NDk="]), solution: _d('NDk='),
+    explanation: _d('UGF0dGVybiBpcyBuwrI6IDHCsiwgMsKyLCAzwrIsIDTCsiwgLi4uIDfCsiA9IDQ5')
+  },
+  {
+    id: '8b', section: 'C — Patterns and Generalisation', sectionMax: 4,
+    label: 'Q8 (b)', marks: 1,
+    text: 'Find the difference between the 20th term and the 19th term of this pattern.',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["Mzk="]), solution: _d('Mzk='),
+    explanation: _d('MjDCsiAtIDE5wrIgPSA0MDAgLSAzNjEgPSAzOQ==')
+  },
+
+  // === SECTION D: Problem Solving (4 marks) ===
+  {
+    id: '9', section: 'D — Problem Solving', sectionMax: 4,
+    label: 'Q9', marks: 1,
+    text: 'A bus travels at 60 km/h for 45 minutes, then at 80 km/h for 30 minutes.<br><br>What is the average speed for the whole journey?',
+    type: 'numeric', placeholder: 'Enter a number',
+    hint: 'Answer in km/h',
+    accept: _dn(["Njg="]), solution: _d('Njgga20vaA=='),
+    explanation: _d('RGlzdGFuY2UgMTogNjAgw5cgNDUvNjAgPSA0NSBrbS4gRGlzdGFuY2UgMjogODAgw5cgMzAvNjAgPSA0MCBrbS4gVG90YWw6IDg1IGttIGluIDc1IG1pbiA9IDEuMjUgaC4gQXZlcmFnZSBzcGVlZCA9IDg1IMO3IDEuMjUgPSA2OCBrbS9o')
+  },
+  {
+    id: '10', section: 'D — Problem Solving', sectionMax: 4,
+    label: 'Q10', marks: 1,
+    text: 'In a class of 30 students, the ratio of boys to girls is 3 : 2.<br>\\(\\frac{1}{3}\\) of the boys and \\(\\frac{3}{4}\\) of the girls walk to school.<br><br>How many students walk to school in total?',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["MTU="]), solution: _d('MTUgc3R1ZGVudHM='),
+    explanation: _d('Qm95czogMzAgw5cgMy81ID0gMTguIEdpcmxzOiAzMCDDlyAyLzUgPSAxMi4gV2FsazogMS8zIMOXIDE4ICsgMy80IMOXIDEyID0gNiArIDkgPSAxNQ==')
+  },
+  {
+    id: '11', section: 'D — Problem Solving', sectionMax: 4,
+    label: 'Q11', marks: 1,
+    text: 'A rectangular swimming pool is 12 m long and 8 m wide. A concrete path of uniform width \\(w\\) metres surrounds the pool.<br><br>The total area of the pool <strong>and</strong> the path together is 140 m². Find \\(w\\).',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["MQ=="]), solution: _d('MSBtZXRyZQ=='),
+    explanation: _d('VG90YWwgZGltZW5zaW9uczogKDEyICsgMncpIMOXICg4ICsgMncpID0gMTQwLiBUcnkgdyA9IDE6IDE0IMOXIDEwID0gMTQwIOKcky4gUGF0aCB3aWR0aCA9IDEgbQ==')
+  },
+  {
+    id: '12', section: 'D — Problem Solving', sectionMax: 4,
+    label: 'Q12', marks: 1,
+    text: 'A shop marks up the cost of an item by 60%, then puts it on sale for "25% off".<br><br>What is the overall percentage profit on the original cost?',
+    type: 'numeric', placeholder: 'Enter a number',
+    hint: 'Enter just the percentage number',
+    accept: _dn(["MjA="]), solution: _d('MjAl'),
+    explanation: _d('SWYgY29zdCA9ICQxMDA6IG1hcmtlZCB1cCB0byAkMTYwLiBUaGVuIDI1JSBvZmY6ICQxNjAgw5cgMC43NSA9ICQxMjAuIFByb2ZpdCA9ICQyMCBvbiAkMTAwID0gMjAl')
+  },
+
+  // === SECTION E: Connecting Concepts (5 marks) ===
+  {
+    id: '13a', section: 'E — Connecting Concepts', sectionMax: 5,
+    label: 'Q13 (a)', marks: 1,
+    text: 'A right-angled triangle has shorter sides of length \\(3x\\) cm and \\(4x\\) cm, and a hypotenuse of 15 cm.<br><br>Find the value of \\(x\\).',
+    type: 'numeric', placeholder: 'Enter a number',
+    accept: _dn(["Mw=="]), solution: _d('eCA9IDM='),
+    explanation: _d('KDN4KcKyICsgKDR4KcKyID0gMTXCsiDihpIgOXjCsiArIDE2eMKyID0gMjI1IOKGkiAyNXjCsiA9IDIyNSDihpIgeMKyID0gOSDihpIgeCA9IDM=')
+  },
+  {
+    id: '13b', section: 'E — Connecting Concepts', sectionMax: 5,
+    label: 'Q13 (b)', marks: 1,
+    text: 'Find the area of this triangle.',
+    type: 'numeric', placeholder: 'Enter a number',
+    hint: 'Answer in cm²',
+    accept: _dn(["NTQ="]), solution: _d('NTQgY23Csg=='),
+    explanation: _d('U2lkZXM6IDMoMykgPSA5IGFuZCA0KDMpID0gMTIuIEFyZWEgPSDCvSDDlyA5IMOXIDEyID0gNTQgY23Csg==')
+  },
+  {
+    id: '14', section: 'E — Connecting Concepts', sectionMax: 5,
+    label: 'Q14', marks: 1,
+    text: 'The matchstick pattern from Q7 (T-shapes: 5, 9, 13, 17, ...) is used to build a display. Each matchstick costs 15 cents.<br><br>What is the cost, in dollars, of building T(8)?',
+    type: 'numeric', placeholder: 'Enter a number',
+    hint: 'Answer in dollars, e.g. 4.95',
+    accept: _dn(["NC45NQ=="]), solution: _d('JDQuOTU='),
+    explanation: _d('VCg4KSA9IDQoOCkgKyAxID0gMzMgZG90cy4gQ29zdCA9IDMzIMOXICQwLjE1ID0gJDQuOTU=')
+  },
+  {
+    id: '15', section: 'E — Connecting Concepts', sectionMax: 5,
+    label: 'Q15', marks: 2,
+    text: 'Two friends start cycling from the same point. One cycles due north at 6 km/h. The other cycles due east at 8 km/h.<br><br>How far apart are they after 1.5 hours?',
+    type: 'numeric', placeholder: 'Enter a number',
+    hint: 'Answer in km',
+    accept: _dn(["MTU="]), solution: _d('MTUga20='),
+    explanation: _d('Tm9ydGg6IDYgw5cgMS41ID0gOSBrbS4gRWFzdDogOCDDlyAxLjUgPSAxMiBrbS4gRGlzdGFuY2UgYXBhcnQgKFB5dGhhZ29yYXMpOiDiiJooOcKyICsgMTLCsikgPSDiiJooODEgKyAxNDQpID0g4oiaKDIyNSkgPSAxNSBrbQ==')
+  },
+];
+
+const SECTIONS = [
+  { name: 'A — Algebraic Fluency', ids: ['1','2','3'], max: 3 },
+  { name: 'B — Algebraic Thinking', ids: ['4','5a','5b','6'], max: 4 },
+  { name: 'C — Patterns and Generalisation', ids: ['7a','7b','8a','8b'], max: 4 },
+  { name: 'D — Problem Solving', ids: ['9','10','11','12'], max: 4 },
+  { name: 'E — Connecting Concepts', ids: ['13a','13b','14','15'], max: 5 },
+];
+
+let currentQ = 0;
+let timerInterval = null;
+let timeLeft = 30 * 60;
+let submitted = false;
+let answers = {};    // stores typed answers
+let mcqAnswers = {}; // stores MCQ selections
+let scores = {};     // stores marks per question after submit
+
+// ===== RENDER QUESTION =====
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  const slot = document.getElementById('questionSlot');
+
+  let inputHTML = '';
+  if (q.type === 'text' || q.type === 'equation' || q.type === 'solve' || q.type === 'numeric' || q.type === 'consecutive') {
+    const val = answers[q.id] || '';
+    inputHTML = `<input type="text" class="answer-input"
+      id="input-${q.id}" value="${escHtml(val)}"
+      placeholder="${q.placeholder}" ${submitted ? 'disabled' : ''} oninput="saveAnswer('${q.id}', this.value)" />`;
+    if (q.hint && !submitted) inputHTML += `<div class="answer-hint">${q.hint}</div>`;
+  }
+  else if (q.type === 'dual') {
+    inputHTML = '<div class="dual-fields">';
+    q.keys.forEach((k, i) => {
+      const val = answers[k] || '';
+      inputHTML += `<div>
+        <span class="field-label">${q.labels[i]}</span>
+        <input type="text" class="answer-input"
+          id="input-${k}" value="${escHtml(val)}"
+          placeholder="${q.placeholder[i]}" ${submitted ? 'disabled' : ''} oninput="saveAnswer('${k}', this.value)" />
+      </div>`;
+    });
+    inputHTML += '</div>';
+  }
+  else if (q.type === 'mcq') {
+    const sel = mcqAnswers[q.id] || '';
+    inputHTML = `<div class="mcq-options" id="mcq-${q.id}">`;
+    q.options.forEach(o => {
+      let cls = 'mcq-option';
+      if (sel === o.value) cls += ' selected';
+      if (submitted && sel === o.value) cls += ' selected'; // just show their selection, no correct/incorrect
+      inputHTML += `<div class="${cls}" data-value="${o.value}" onclick="selectMCQ('${q.id}','${o.value}')">
+        <div class="mcq-radio"></div>
+        <span class="mcq-label">${o.label}</span>
+      </div>`;
+    });
+    inputHTML += '</div>';
+  }
+
+  // No feedback shown to students
+  let fbHTML = '';
+
+  slot.innerHTML = `
+    <div class="question-card">>
+      <div class="q-section-tag">
+        <span>Section ${q.section}</span>
+        <span class="q-section-marks">${q.sectionMax} marks</span>
+      </div>
+      <div class="q-body">
+        <div class="q-top">
+          <span class="q-number">${q.label}</span>
+          <span class="q-marks">${q.marks} mark${q.marks > 1 ? 's' : ''}</span>
+        </div>
+        <div class="q-text">${q.text}</div>
+        ${inputHTML}
+        ${fbHTML}
+      </div>
+    </div>`;
+
+  // Re-render MathJax
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([slot]).catch(() => {});
+  }
+
+  // Update nav buttons
+  document.getElementById('prevBtn').disabled = idx === 0;
+  const isLast = idx === QUESTIONS.length - 1;
+  document.getElementById('nextBtn').classList.toggle('hidden', isLast && !submitted);
+  document.getElementById('submitBtn').classList.toggle('hidden', !isLast || submitted);
+  if (submitted) {
+    document.getElementById('submitBtn').classList.add('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+    document.getElementById('nextBtn').disabled = isLast;
+  }
+
+  // Update section label in timer
+  document.getElementById('sectionLabel').textContent = `Question ${idx + 1} of ${QUESTIONS.length}`;
+
+  // Update dots
+  updateDots();
+
+  // Focus input if not submitted
+  if (!submitted) {
+    const firstInput = slot.querySelector('input:not([disabled])');
+    if (firstInput) setTimeout(() => firstInput.focus(), 100);
+  }
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ===== SAVE ANSWERS =====
+function saveAnswer(id, val) { answers[id] = val; updateDots(); }
+
+function selectMCQ(qId, val) {
+  if (submitted) return;
+  mcqAnswers[qId] = val;
+  renderQuestion(currentQ); // re-render to show selection
+}
+
+// ===== NAVIGATION =====
+function navigate(dir) {
+  const next = currentQ + dir;
+  if (next >= 0 && next < QUESTIONS.length) {
+    currentQ = next;
+    renderQuestion(currentQ);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToQuestion(idx) {
+  currentQ = idx;
+  renderQuestion(currentQ);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== DOTS =====
+function buildDots() {
+  const container = document.getElementById('qDots');
+  container.innerHTML = QUESTIONS.map((q, i) =>
+    `<div class="q-dot" id="dot-${i}" onclick="goToQuestion(${i})">${i + 1}</div>`
+  ).join('');
+}
+
+function updateDots() {
+  QUESTIONS.forEach((q, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    if (!dot) return;
+    dot.className = 'q-dot';
+    if (i === currentQ) dot.classList.add('active');
+    else if (isAnswered(q)) dot.classList.add('answered');
+  });
+}
+
+function isAnswered(q) {
+  if (q.type === 'mcq') return !!mcqAnswers[q.id];
+  if (q.type === 'dual') return q.keys.every(k => answers[k] && answers[k].trim());
+  return answers[q.id] && answers[q.id].trim();
+}
+
+// ===== TIMER =====
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  const bar = document.getElementById('timerBar');
+  bar.classList.remove('warning','danger');
+  if (timeLeft <= 120) bar.classList.add('danger');
+  else if (timeLeft <= 300) bar.classList.add('warning');
+}
+
+// ===== START =====
+function startExam() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) { document.getElementById('studentName').style.borderColor = 'var(--incorrect)'; document.getElementById('studentName').focus(); return; }
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('timerBar').classList.remove('hidden');
+  document.getElementById('examContent').classList.remove('hidden');
+  buildDots();
+  renderQuestion(0);
+  startTimer();
+}
+
+// ===== NORMALISE =====
+function normalise(s) { return s.replace(/\s+/g,'').replace(/[−–—]/g,'-').replace(/×/g,'*').replace(/÷/g,'/').toLowerCase(); }
+
+// ===== CHECK DUAL SINGLE =====
+function checkDualSingle(q, i) {
+  const k = q.keys[i];
+  const raw = (answers[k] || '').replace(/[−–—]/g,'-');
+  const m = raw.match(/-?\d+\.?\d*/);
+  const val = m ? parseFloat(m[0]) : null;
+  return val !== null && q.accept[i].includes(val);
+}
+
+// ===== MARK ALL =====
+function markAll() {
+  QUESTIONS.forEach(q => {
+    let score = 0;
+    if (q.type === 'numeric' || q.type === 'solve') {
+      const raw = (answers[q.id] || '').replace(/[−–—]/g,'-');
+      const m = raw.match(/-?\d+\.?\d*/);
+      const val = m ? parseFloat(m[0]) : null;
+      if (val !== null && q.accept.includes(val)) score = 1;
+    } else if (q.type === 'text' || q.type === 'equation') {
+      const raw = normalise(answers[q.id] || '');
+      if (q.accept.some(a => normalise(a) === raw)) score = 1;
+    } else if (q.type === 'mcq') {
+      if (mcqAnswers[q.id] === q.correctValue) score = 1;
+    } else if (q.type === 'dual') {
+      const allCorrect = q.keys.every((k, i) => {
+        const raw = (answers[k] || '').replace(/[−–—]/g,'-');
+        const m = raw.match(/-?\d+\.?\d*/);
+        const val = m ? parseFloat(m[0]) : null;
+        return val !== null && q.accept[i].includes(val);
+      });
+      if (allCorrect) score = 1;
+    } else if (q.type === 'consecutive') {
+      const raw = answers[q.id] || '';
+      const nums = raw.match(/-?\d+/g);
+      if (nums && nums.length === 3 && JSON.stringify(nums.map(Number)) === JSON.stringify(q.accept)) score = 1;
+    }
+    scores[q.id] = score;
+  });
+}
+
+// =============================================================
+// EMAILJS CONFIGURATION — TEACHER: UPDATE THESE THREE VALUES
+// See the setup guide for instructions on getting these.
+// =============================================================
+const EMAILJS_PUBLIC_KEY = '9r995wwbCW_z88kU-';      // From EmailJS dashboard → Account → Public Key
+const EMAILJS_SERVICE_ID = 'service_exam';      // From EmailJS dashboard → Email Services
+const EMAILJS_TEMPLATE_ID = 'template_dqwxv27';    // From EmailJS dashboard → Email Templates
+
+// =============================================================
+// GOOGLE SHEETS CONFIGURATION — TEACHER: UPDATE THIS VALUE
+// See the setup guide for instructions on deploying the script.
+// =============================================================
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwxyQc8yZsHabUUbfyPKjgdSEarNdlhem3fDLQzuGzChWLOA2i-OPxC-xICBQ9TxYunaA/exec';  // From Apps Script → Deploy → Web app URL
+
+// ===== BUILD HTML EMAIL REPORT =====
+function buildEmailReport(studentName, total, sectionScores, band) {
+  const timestamp = new Date().toLocaleString('en-AU', { dateStyle: 'full', timeStyle: 'short' });
+  const bandColor = total >= 16 ? '#2a9d5c' : total >= 12 ? '#e8a838' : total >= 8 ? '#d94452' : '#990000';
+
+  let questionsHTML = '';
+  QUESTIONS.forEach(q => {
+    const studentAns = getStudentAnswer(q) || '(blank)';
+    const isCorrect = scores[q.id] === 1;
+    const icon = isCorrect ? '✓' : '✗';
+    const rowColor = isCorrect ? '#e8f5ef' : '#fde8ea';
+    const iconColor = isCorrect ? '#2a9d5c' : '#d94452';
+    questionsHTML += `
+      <tr style="background:${rowColor};">
+        <td style="padding:8px 12px;border:1px solid #ddd;font-weight:600;">${q.label}</td>
+        <td style="padding:8px 12px;border:1px solid #ddd;">${escHtml(studentAns)}</td>
+        <td style="padding:8px 12px;border:1px solid #ddd;">${q.solution}</td>
+        <td style="padding:8px 12px;border:1px solid #ddd;text-align:center;color:${iconColor};font-weight:700;font-size:1.1rem;">${icon}</td>
+      </tr>`;
+  });
+
+  let sectionsHTML = '';
+  SECTIONS.forEach(s => {
+    const sc = sectionScores[s.name];
+    const pct = Math.round(sc / s.max * 100);
+    sectionsHTML += `
+      <tr>
+        <td style="padding:8px 12px;border:1px solid #ddd;">${s.name}</td>
+        <td style="padding:8px 12px;border:1px solid #ddd;text-align:center;font-weight:600;">${sc} / ${s.max}</td>
+        <td style="padding:8px 12px;border:1px solid #ddd;text-align:center;">${pct}%</td>
+      </tr>`;
+  });
+
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;color:#1a2a40;">
+      <div style="background:linear-gradient(135deg,#0f1b2d,#2c4a6e);padding:28px 32px;border-radius:12px 12px 0 0;color:#fff;text-align:center;">
+        <h1 style="margin:0 0 4px;font-size:1.5rem;">Accelerated Mathematics — Entrance Exam</h1>
+        <p style="margin:0;opacity:0.8;font-size:0.9rem;">Results Report</p>
+      </div>
+      <div style="background:#fff;padding:28px 32px;border:1px solid #e3eef7;border-top:none;">
+        <table style="width:100%;margin-bottom:20px;">
+          <tr><td style="color:#4a6d8c;padding:4px 0;">Student:</td><td style="font-weight:600;">${escHtml(studentName)}</td></tr>
+          <tr><td style="color:#4a6d8c;padding:4px 0;">Date:</td><td>${timestamp}</td></tr>
+        </table>
+        <div style="text-align:center;margin:20px 0;">
+          <div style="font-size:3rem;font-weight:700;color:#0f1b2d;">${total}<span style="font-size:1.2rem;color:#4a6d8c;font-weight:400;"> / 20</span></div>
+          <div style="display:inline-block;padding:6px 20px;border-radius:20px;background:${bandColor}15;color:${bandColor};font-weight:600;margin-top:8px;">${band}</div>
+        </div>
+
+        <h3 style="color:#0f1b2d;border-bottom:2px solid #e3eef7;padding-bottom:8px;margin:24px 0 12px;">Section Breakdown</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+          <tr style="background:#0f1b2d;color:#fff;">
+            <th style="padding:8px 12px;text-align:left;border:1px solid #ddd;">Section</th>
+            <th style="padding:8px 12px;text-align:center;border:1px solid #ddd;">Score</th>
+            <th style="padding:8px 12px;text-align:center;border:1px solid #ddd;">%</th>
+          </tr>
+          ${sectionsHTML}
+          <tr style="background:#e8f0e8;font-weight:700;">
+            <td style="padding:8px 12px;border:1px solid #ddd;">Total</td>
+            <td style="padding:8px 12px;text-align:center;border:1px solid #ddd;">${total} / 20</td>
+            <td style="padding:8px 12px;text-align:center;border:1px solid #ddd;">${Math.round(total/20*100)}%</td>
+          </tr>
+        </table>
+
+        <h3 style="color:#0f1b2d;border-bottom:2px solid #e3eef7;padding-bottom:8px;margin:24px 0 12px;">Question-by-Question Detail</h3>
+        <table style="width:100%;border-collapse:collapse;">
+          <tr style="background:#0f1b2d;color:#fff;">
+            <th style="padding:8px 12px;text-align:left;border:1px solid #ddd;">Q#</th>
+            <th style="padding:8px 12px;text-align:left;border:1px solid #ddd;">Student Answer</th>
+            <th style="padding:8px 12px;text-align:left;border:1px solid #ddd;">Correct Answer</th>
+            <th style="padding:8px 12px;text-align:center;border:1px solid #ddd;">Mark</th>
+          </tr>
+          ${questionsHTML}
+        </table>
+      </div>
+      <div style="background:#e3eef7;padding:14px 32px;border-radius:0 0 12px 12px;text-align:center;font-size:0.8rem;color:#4a6d8c;">
+        Accelerated Mathematics Entrance Exam — Auto-generated report. Confidential.
+      </div>
+    </div>`;
+}
+
+// ===== SUBMIT =====
+function submitExam(timeUp = false) {
+  if (submitted) return;
+  if (!timeUp) {
+    const unanswered = QUESTIONS.filter(q => !isAnswered(q)).length;
+    if (unanswered > 0 && !confirm(`You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Submit anyway?`)) return;
+  }
+
+  submitted = true;
+  clearInterval(timerInterval);
+  markAll();
+
+  // Calculate scores silently
+  let total = 0;
+  const sectionScores = {};
+  SECTIONS.forEach(s => { sectionScores[s.name] = 0; });
+  QUESTIONS.forEach(q => {
+    total += scores[q.id];
+    SECTIONS.forEach(s => { if (s.ids.includes(q.id)) sectionScores[s.name] += scores[q.id]; });
+  });
+
+  // Determine band
+  let band = '';
+  if (total >= 16) band = 'Strong — Highly suited for Accelerated Maths';
+  else if (total >= 12) band = 'Capable — Likely suited with support';
+  else if (total >= 8) band = 'Developing — Not yet ready';
+  else band = 'Below — Standard pathway recommended';
+
+  // Populate hidden teacher panel
+  document.getElementById('totalScore').textContent = total;
+  const bandEl = document.getElementById('bandLabel');
+  bandEl.textContent = band;
+  if (total >= 16) bandEl.className = 'results-band band-strong';
+  else if (total >= 12) bandEl.className = 'results-band band-capable';
+  else if (total >= 8) bandEl.className = 'results-band band-developing';
+  else bandEl.className = 'results-band band-below';
+
+  let html = '';
+  SECTIONS.forEach(s => {
+    const pct = sectionScores[s.name] / s.max * 100;
+    const color = pct >= 75 ? 'var(--correct)' : pct >= 50 ? 'var(--gold)' : 'var(--incorrect)';
+    html += `<div class="breakdown-row"><span>${s.name}</span><div class="breakdown-bar"><div class="breakdown-fill" style="width:${pct}%;background:${color}"></div></div><span>${sectionScores[s.name]} / ${s.max}</span></div>`;
+  });
+  html += `<div class="breakdown-row"><span>Total</span><div class="breakdown-bar"><div class="breakdown-fill" style="width:${total/20*100}%;background:var(--navy)"></div></div><span>${total} / 20</span></div>`;
+  document.getElementById('breakdownRows').innerHTML = html;
+
+  // Question-by-question detail for teacher panel
+  let detailHTML = '';
+  QUESTIONS.forEach(q => {
+    const studentAns = getStudentAnswer(q);
+    const isCorrect = scores[q.id] === 1;
+    const icon = isCorrect ? '✓' : '✗';
+    const color = isCorrect ? 'var(--correct)' : 'var(--incorrect)';
+    detailHTML += `<div class="breakdown-row" style="font-size:0.85rem;">
+      <span style="min-width:60px;font-weight:600;">${q.label}</span>
+      <span style="flex:1;color:var(--steel);">Student: <strong style="color:var(--ink)">${escHtml(studentAns) || '<em>blank</em>'}</strong></span>
+      <span style="flex:1;color:var(--steel);">Answer: <strong>${q.solution}</strong></span>
+      <span style="color:${color};font-weight:700;min-width:24px;text-align:center;">${icon}</span>
+    </div>`;
+  });
+  document.getElementById('detailRows').innerHTML = detailHTML;
+
+  // Update timer
+  const timerBar = document.getElementById('timerBar');
+  timerBar.innerHTML = timeUp
+    ? '<div style="font-weight:600;color:var(--incorrect);">⏱ Time\'s up — exam submitted automatically</div>'
+    : '<div style="font-weight:600;color:var(--correct);">✓ Exam submitted</div>';
+  timerBar.classList.remove('warning','danger');
+
+  // Update confirmation with student name
+  const studentName = document.getElementById('studentName').value.trim();
+  document.getElementById('confirmMsg').innerHTML =
+    `Thank you, <strong>${escHtml(studentName)}</strong>. Your responses have been recorded.<br>Your teacher will review the results and be in touch.`;
+
+  // Hide exam, show confirmation
+  document.getElementById('examContent').classList.add('hidden');
+  document.getElementById('resultsPanel').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // ===== SEND EMAIL =====
+  const emailReport = buildEmailReport(studentName, total, sectionScores, band);
+  const statusEl = document.getElementById('emailStatus');
+
+  // Check if EmailJS is configured
+  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    console.warn('EmailJS not configured — results not emailed. See setup guide.');
+    return;
+  }
+
+  statusEl.style.display = 'block';
+  statusEl.style.background = 'var(--frost)';
+  statusEl.style.color = 'var(--steel)';
+  statusEl.textContent = 'Sending results to your teacher…';
+
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    student_name: studentName,
+    score: `${total}/20`,
+    band: band,
+    report_html: emailReport,
+    timestamp: new Date().toLocaleString('en-AU', { dateStyle: 'full', timeStyle: 'short' }),
+  }).then(function() {
+    statusEl.style.background = 'var(--correct-bg)';
+    statusEl.style.color = '#1a7a3d';
+    statusEl.style.border = '1px solid #b4dfc6';
+    statusEl.textContent = '✓ Results sent to your teacher successfully.';
+  }).catch(function(err) {
+    console.error('EmailJS error:', err);
+    statusEl.style.background = 'var(--incorrect-bg)';
+    statusEl.style.color = '#a33340';
+    statusEl.style.border = '1px solid #f0bfc4';
+    statusEl.textContent = 'Could not send results automatically. Please let your teacher know you have finished.';
+  });
+
+  // ===== SEND TO GOOGLE SHEET =====
+  sendToGoogleSheet(studentName, total, band, sectionScores);
+}
+
+// ===== GOOGLE SHEETS INTEGRATION =====
+function sendToGoogleSheet(studentName, total, band, sectionScores) {
+  if (GOOGLE_SHEET_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
+    console.warn('Google Sheets not configured — results not recorded to spreadsheet.');
+    return;
+  }
+
+  const timestamp = new Date().toLocaleString('en-AU', { dateStyle: 'full', timeStyle: 'short' });
+
+  // Build per-question data
+  const questionMarks = {};
+  QUESTIONS.forEach(q => {
+    questionMarks[q.label] = {
+      studentAnswer: getStudentAnswer(q),
+      mark: scores[q.id]
+    };
+  });
+
+  const payload = {
+    student_name: studentName,
+    timestamp: timestamp,
+    total_score: total,
+    total_marks: 20,
+    band: band,
+    section_a: sectionScores['A — Algebraic Fluency'] || 0,
+    section_b: sectionScores['B — Algebraic Thinking'] || 0,
+    section_c: sectionScores['C — Patterns and Generalisation'] || 0,
+    section_d: sectionScores['D — Problem Solving'] || 0,
+    section_e: sectionScores['E — Connecting Concepts'] || 0,
+    questions: questionMarks
+  };
+
+  fetch(GOOGLE_SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    console.log('Results sent to Google Sheet.');
+  }).catch(err => {
+    console.error('Google Sheet error:', err);
+  });
+}
+
+function getStudentAnswer(q) {
+  if (q.type === 'mcq') return mcqAnswers[q.id] || '';
+  if (q.type === 'dual') return q.keys.map(k => answers[k] || '').join(', ');
+  return answers[q.id] || '';
+}
+
+// ===== TEACHER ACCESS: Ctrl+Shift+T =====
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.shiftKey && e.key === 'T' && submitted) {
+    e.preventDefault();
+    const panel = document.getElementById('teacherPanel');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      panel.classList.add('show');
+      panel.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      panel.style.display = 'none';
+      panel.classList.remove('show');
+    }
+  }
+});
+
+// ===== CSV DOWNLOAD =====
+function downloadCSV() {
+  const studentName = document.getElementById('studentName').value.trim();
+  const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  let total = 0;
+  QUESTIONS.forEach(q => { total += scores[q.id]; });
+
+  let csv = 'Student Name,Date,Total Score,Total Marks\n';
+  csv += `"${studentName}","${timestamp}",${total},20\n\n`;
+  csv += 'Question,Student Answer,Correct Answer,Mark\n';
+
+  QUESTIONS.forEach(q => {
+    const studentAns = getStudentAnswer(q).replace(/"/g, '""');
+    const correctAns = q.solution.replace(/"/g, '""');
+    csv += `"${q.label}","${studentAns}","${correctAns}",${scores[q.id]}\n`;
+  });
+
+  csv += '\nSection,Score,Max\n';
+  const sectionScores = {};
+  SECTIONS.forEach(s => { sectionScores[s.name] = 0; });
+  QUESTIONS.forEach(q => {
+    SECTIONS.forEach(s => { if (s.ids.includes(q.id)) sectionScores[s.name] += scores[q.id]; });
+  });
+  SECTIONS.forEach(s => {
+    csv += `"${s.name}",${sectionScores[s.name]},${s.max}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `AccelMaths_${studentName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
